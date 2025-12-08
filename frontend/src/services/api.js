@@ -24,31 +24,40 @@ api.interceptors.request.use(
     }
 );
 
-// Response interceptor for error handling and auto-refresh
+// Response interceptor for handling errors and token refresh
 api.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
 
-        // If access token expired, try to refresh
-        if (error.response?.status === 401 &&
-            error.response?.data?.code === 'TOKEN_EXPIRED' &&
-            !originalRequest._retry) {
+        // Handle network errors
+        if (!error.response) {
+            error.message = 'Network Error';
+            return Promise.reject(error);
+        }
+
+        // If error is 401 and we haven't retried yet, try refreshing token
+        if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
 
             try {
                 const refreshToken = localStorage.getItem('refreshToken');
-                if (refreshToken) {
-                    const response = await axios.post(`${API_URL}/auth/refresh-token`, { refreshToken });
-                    const { accessToken, refreshToken: newRefreshToken } = response.data;
-
-                    localStorage.setItem('accessToken', accessToken);
-                    localStorage.setItem('refreshToken', newRefreshToken);
-
-                    // Retry original request with new token
-                    originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-                    return api(originalRequest);
+                if (!refreshToken) {
+                    throw new Error('No refresh token');
                 }
+
+                const { data } = await axios.post(`${API_URL}/auth/refresh`, {
+                    refreshToken,
+                });
+
+                localStorage.setItem('accessToken', data.accessToken);
+                // The instruction snippet was incomplete here, preserving original logic for newRefreshToken
+                // and setting it in localStorage, and also setting default header for api instance.
+                localStorage.setItem('refreshToken', data.refreshToken);
+                api.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`;
+                originalRequest.headers['Authorization'] = `Bearer ${data.accessToken}`;
+
+                return api(originalRequest);
             } catch (refreshError) {
                 // Refresh failed, logout user
                 authAPI.logout();

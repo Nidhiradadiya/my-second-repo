@@ -1,37 +1,46 @@
 import { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { Form, Input, Button, Card, Typography, Space, message, Alert } from 'antd';
+import { MailOutlined, LockOutlined } from '@ant-design/icons';
 import { authAPI } from '../services/api';
 import './Auth.css';
 
+const { Title, Text } = Typography;
+
 function Login() {
     const navigate = useNavigate();
-    const location = useLocation();
-    const [formData, setFormData] = useState({
-        email: '',
-        password: '',
-    });
-    const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    const successMessage = location.state?.message;
+    const [error, setError] = useState(null);
 
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        });
-        setError('');
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async (values) => {
+        console.log('Form submitted with:', values);
         setLoading(true);
-        setError('');
+        setError(null);
 
         try {
-            await authAPI.login(formData);
+            console.log('Attempting login...');
+            const response = await authAPI.login(values);
+            console.log('Login response:', response);
+            message.success('Login successful!');
             navigate('/dashboard');
-        } catch (err) {
-            setError(err.response?.data?.message || 'Login failed. Please try again.');
+        } catch (error) {
+            console.log('Login error caught:', error);
+            console.log('Error response:', error.response);
+            console.log('Error message:', error.message);
+
+            let errorMessage = 'Login failed. Please try again.';
+
+            if (error.message === 'Network Error') {
+                errorMessage = 'Cannot connect to server. Please check your connection.';
+            } else if (error.response?.data?.message) {
+                errorMessage = error.response.data.message;
+            } else if (error.response?.status === 404) {
+                errorMessage = 'User not found';
+            }
+
+            console.log('Setting error message:', errorMessage);
+            setError(errorMessage);
+            message.error(errorMessage);
         } finally {
             setLoading(false);
         }
@@ -39,71 +48,73 @@ function Login() {
 
     return (
         <div className="auth-container">
-            <div className="auth-card card">
-                <div className="auth-header">
-                    <h1 className="auth-title">Welcome Back</h1>
-                    <p className="auth-subtitle">Sign in to your account</p>
-                </div>
+            <Card className="auth-card" variant="outlined">
+                <Space direction="vertical" size="large" style={{ width: '100%', textAlign: 'center' }}>
+                    <div>
+                        <Title level={2}>Welcome Back</Title>
+                        <Text type="secondary">Sign in to your billing account</Text>
+                    </div>
 
-                {successMessage && <div className="success">{successMessage}</div>}
+                    {error && (
+                        <Alert
+                            message="Error"
+                            description={error}
+                            type="error"
+                            closable
+                            onClose={() => setError(null)}
+                            showIcon
+                            style={{ textAlign: 'left' }}
+                        />
+                    )}
 
-                <form onSubmit={handleSubmit} className="auth-form">
-                    <div className="form-group">
-                        <label htmlFor="email" className="form-label">Email Address</label>
-                        <input
-                            type="email"
-                            id="email"
+                    <Form
+                        name="login"
+                        onFinish={handleSubmit}
+                        layout="vertical"
+                        requiredMark={false}
+                        size="large"
+                    >
+                        <Form.Item
                             name="email"
-                            className="input"
-                            placeholder="Enter your email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
+                            rules={[
+                                { required: true, message: 'Please enter your email' },
+                                { type: 'email', message: 'Please enter a valid email' }
+                            ]}
+                        >
+                            <Input
+                                prefix={<MailOutlined />}
+                                placeholder="Email address"
+                                disabled={loading}
+                            />
+                        </Form.Item>
 
-                    <div className="form-group">
-                        <label htmlFor="password" className="form-label">Password</label>
-                        <input
-                            type="password"
-                            id="password"
+                        <Form.Item
                             name="password"
-                            className="input"
-                            placeholder="Enter your password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
+                            rules={[
+                                { required: true, message: 'Please enter your password' },
+                                { min: 6, message: 'Password must be at least 6 characters' }
+                            ]}
+                        >
+                            <Input.Password
+                                prefix={<LockOutlined />}
+                                placeholder="Password"
+                                disabled={loading}
+                            />
+                        </Form.Item>
 
-                    <div style={{ textAlign: 'right', marginTop: '-0.5rem' }}>
-                        <Link to="/forgot-password" className="link" style={{ fontSize: '0.875rem' }}>
-                            Forgot password?
-                        </Link>
-                    </div>
+                        <Form.Item>
+                            <Button type="primary" htmlType="submit" block loading={loading}>
+                                {loading ? 'Signing in...' : 'Sign In'}
+                            </Button>
+                        </Form.Item>
+                    </Form>
 
-                    {error && <div className="error">{error}</div>}
-
-                    <button type="submit" className="btn btn-primary" disabled={loading}>
-                        {loading ? 'Signing In...' : 'Sign In'}
-                    </button>
-                </form>
-
-                <div className="auth-footer">
-                    <p>
-                        Don't have an account?{' '}
-                        <Link to="/register" className="link">
-                            Sign up
-                        </Link>
-                    </p>
-                </div>
-            </div>
-
-            <div className="bg-decoration">
-                <div className="circle circle-1"></div>
-                <div className="circle circle-2"></div>
-                <div className="circle circle-3"></div>
-            </div>
+                    <Space separator="·">
+                        <Link to="/forgot-password">Forgot Password?</Link>
+                        <Link to="/register">Create Account</Link>
+                    </Space>
+                </Space>
+            </Card>
         </div>
     );
 }

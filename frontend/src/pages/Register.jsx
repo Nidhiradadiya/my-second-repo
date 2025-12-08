@@ -1,36 +1,41 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { Form, Input, Button, Card, Typography, Space, message } from 'antd';
+import { UserOutlined, MailOutlined, LockOutlined } from '@ant-design/icons';
 import { authAPI } from '../services/api';
 import './Auth.css';
 
+const { Title, Text } = Typography;
+
 function Register() {
     const navigate = useNavigate();
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        password: '',
-    });
-    const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        });
-        setError('');
-    };
+    const handleSubmit = async (values) => {
+        if (values.password !== values.confirmPassword) {
+            message.error('Passwords do not match');
+            return;
+        }
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
         setLoading(true);
-        setError('');
-
         try {
-            await authAPI.register(formData);
-            navigate('/login', { state: { message: 'Registration successful! Please login.' } });
-        } catch (err) {
-            setError(err.response?.data?.message || 'Registration failed. Please try again.');
+            await authAPI.register({
+                name: values.name,
+                email: values.email,
+                password: values.password,
+            });
+            message.success('Account created successfully!');
+            navigate('/dashboard');
+        } catch (error) {
+            let errorMessage = 'Registration failed. Please try again.';
+
+            if (error.message === 'Network Error') {
+                errorMessage = 'Cannot connect to server. Please check your connection.';
+            } else if (error.response?.data?.message) {
+                errorMessage = error.response.data.message;
+            }
+
+            message.error(errorMessage);
         } finally {
             setLoading(false);
         }
@@ -38,78 +43,89 @@ function Register() {
 
     return (
         <div className="auth-container">
-            <div className="auth-card card">
-                <div className="auth-header">
-                    <h1 className="auth-title">Create Account</h1>
-                    <p className="auth-subtitle">Join us today and get started</p>
-                </div>
+            <Card className="auth-card" bordered={false}>
+                <Space direction="vertical" size="large" style={{ width: '100%', textAlign: 'center' }}>
+                    <div>
+                        <Title level={2}>Create Account</Title>
+                        <Text type="secondary">Get started with your billing system</Text>
+                    </div>
 
-                <form onSubmit={handleSubmit} className="auth-form">
-                    <div className="form-group">
-                        <label htmlFor="name" className="form-label">Name</label>
-                        <input
-                            type="text"
-                            id="name"
+                    <Form
+                        name="register"
+                        onFinish={handleSubmit}
+                        layout="vertical"
+                        requiredMark={false}
+                        size="large"
+                    >
+                        <Form.Item
                             name="name"
-                            className="input"
-                            placeholder="Enter your name"
-                            value={formData.name}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
+                            rules={[
+                                { required: true, message: 'Please enter your name' },
+                                { min: 2, message: 'Name must be at least 2 characters' }
+                            ]}
+                        >
+                            <Input
+                                prefix={<UserOutlined />}
+                                placeholder="Full name"
+                                disabled={loading}
+                            />
+                        </Form.Item>
 
-                    <div className="form-group">
-                        <label htmlFor="email" className="form-label">Email Address</label>
-                        <input
-                            type="email"
-                            id="email"
+                        <Form.Item
                             name="email"
-                            className="input"
-                            placeholder="Enter your email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
+                            rules={[
+                                { required: true, message: 'Please enter your email' },
+                                { type: 'email', message: 'Please enter a valid email' }
+                            ]}
+                        >
+                            <Input
+                                prefix={<MailOutlined />}
+                                placeholder="Email address"
+                                disabled={loading}
+                            />
+                        </Form.Item>
 
-                    <div className="form-group">
-                        <label htmlFor="password" className="form-label">Password</label>
-                        <input
-                            type="password"
-                            id="password"
+                        <Form.Item
                             name="password"
-                            className="input"
-                            placeholder="Create a password (min. 6 characters)"
-                            value={formData.password}
-                            onChange={handleChange}
-                            required
-                            minLength={6}
-                        />
-                    </div>
+                            rules={[
+                                { required: true, message: 'Please enter a password' },
+                                { min: 6, message: 'Password must be at least 6 characters' }
+                            ]}
+                        >
+                            <Input.Password
+                                prefix={<LockOutlined />}
+                                placeholder="Password (min 6 characters)"
+                                disabled={loading}
+                            />
+                        </Form.Item>
 
-                    {error && <div className="error">{error}</div>}
+                        <Form.Item
+                            name="confirmPassword"
+                            rules={[
+                                { required: true, message: 'Please confirm your password' },
+                                { min: 6, message: 'Password must be at least 6 characters' }
+                            ]}
+                        >
+                            <Input.Password
+                                prefix={<LockOutlined />}
+                                placeholder="Confirm password"
+                                disabled={loading}
+                            />
+                        </Form.Item>
 
-                    <button type="submit" className="btn btn-primary" disabled={loading}>
-                        {loading ? 'Creating Account...' : 'Sign Up'}
-                    </button>
-                </form>
+                        <Form.Item>
+                            <Button type="primary" htmlType="submit" block loading={loading}>
+                                {loading ? 'Creating Account...' : 'Create Account'}
+                            </Button>
+                        </Form.Item>
+                    </Form>
 
-                <div className="auth-footer">
-                    <p>
-                        Already have an account?{' '}
-                        <Link to="/login" className="link">
-                            Sign in
-                        </Link>
-                    </p>
-                </div>
-            </div>
-
-            <div className="bg-decoration">
-                <div className="circle circle-1"></div>
-                <div className="circle circle-2"></div>
-                <div className="circle circle-3"></div>
-            </div>
+                    <Space>
+                        <Text type="secondary">Already have an account?</Text>
+                        <Link to="/login">Sign In</Link>
+                    </Space>
+                </Space>
+            </Card>
         </div>
     );
 }

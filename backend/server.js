@@ -9,25 +9,34 @@ dotenv.config();
 // Connect to database
 connectDB();
 
+// Initialize express
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/company', require('./routes/company'));
+app.use('/api/customers', require('./routes/customers'));
+app.use('/api/products', require('./routes/products'));
+app.use('/api/bills', require('./routes/bills'));
+app.use('/api/payments', require('./routes/payments'));
 
 // Health check route
 app.get('/api/health', (req, res) => {
-    res.json({ status: 'ok', message: 'Backend is running' });
+    res.json({ status: 'ok', message: 'Server is running' });
 });
 
-// Error handler
+// Error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).json({ message: 'Something went wrong!', error: err.message });
+    res.status(err.status || 500).json({
+        message: err.message || 'Internal Server Error',
+        error: process.env.NODE_ENV === 'development' ? err : {},
+    });
 });
 
 const PORT = process.env.PORT || 5000;

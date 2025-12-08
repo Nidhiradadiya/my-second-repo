@@ -1,99 +1,228 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Layout, Card, Row, Col, Statistic, Button, Space, Typography, Dropdown, Menu } from 'antd';
+import {
+    DollarOutlined,
+    UserOutlined,
+    FileTextOutlined,
+    ShoppingOutlined,
+    PlusOutlined,
+    SettingOutlined,
+    LogoutOutlined,
+    MoonOutlined,
+    SunOutlined,
+} from '@ant-design/icons';
+import { useTheme } from '../contexts/ThemeProvider';
 import { authAPI } from '../services/api';
+import { customerAPI, productAPI, billAPI } from '../services/billing';
 import './Dashboard.css';
+
+const { Header, Content } = Layout;
+const { Title, Text } = Typography;
 
 function Dashboard() {
     const navigate = useNavigate();
+    const { isDarkMode, toggleTheme } = useTheme();
     const [user, setUser] = useState(null);
+    const [stats, setStats] = useState({
+        totalCustomers: 0,
+        totalProducts: 0,
+        totalBills: 0,
+        totalRevenue: 0,
+    });
+    const [recentBills, setRecentBills] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const userData = await authAPI.getMe();
-                setUser(userData);
-            } catch (error) {
-                console.error('Failed to fetch user:', error);
-                // If failed, try to get from localStorage
-                setUser(authAPI.getCurrentUser());
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchUser();
+        loadDashboardData();
     }, []);
 
-    const handleLogout = async () => {
-        await authAPI.logout();
+    const loadDashboardData = async () => {
+        try {
+            const currentUser = authAPI.getCurrentUser();
+            setUser(currentUser);
+
+            const [customersRes, productsRes, billsRes] = await Promise.all([
+                customerAPI.getAll({ limit: 1 }),
+                productAPI.getAll({ limit: 1 }),
+                billAPI.getAll({ limit: 5 }),
+            ]);
+
+            const totalRevenue = billsRes.bills.reduce((sum, bill) => sum + bill.total, 0);
+
+            setStats({
+                totalCustomers: customersRes.total || 0,
+                totalProducts: productsRes.total || 0,
+                totalBills: billsRes.total || 0,
+                totalRevenue,
+            });
+
+            setRecentBills(billsRes.bills || []);
+        } catch (error) {
+            console.error('Error loading dashboard:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleLogout = () => {
+        authAPI.logout();
         navigate('/login');
     };
 
-    if (loading) {
-        return (
-            <div className="dashboard-container">
-                <div style={{ textAlign: 'center', padding: '2rem' }}>
-                    <p>Loading...</p>
-                </div>
-            </div>
-        );
-    }
+    const userMenuItems = [
+        {
+            key: 'theme',
+            icon: isDarkMode ? <SunOutlined /> : <MoonOutlined />,
+            label: isDarkMode ? 'Light Mode' : 'Dark Mode',
+            onClick: toggleTheme,
+        },
+        {
+            key: 'settings',
+            icon: <SettingOutlined />,
+            label: 'Company Settings',
+            onClick: () => navigate('/settings/company'),
+        },
+        {
+            type: 'divider',
+        },
+        {
+            key: 'logout',
+            icon: <LogoutOutlined />,
+            label: 'Logout',
+            danger: true,
+            onClick: handleLogout,
+        },
+    ];
 
     return (
-        <div className="dashboard-container">
-            <div className="dashboard-header">
-                <h1 className="dashboard-title">Dashboard</h1>
-                <button onClick={handleLogout} className="btn btn-logout">
-                    Logout
-                </button>
-            </div>
+        <Layout className="dashboard-layout">
+            <Header className="dashboard-header">
+                <Title level={3} style={{ margin: 0, color: '#ED4192' }}>
+                    Billing System
+                </Title>
+                <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
+                    <Button type="text" icon={<UserOutlined />} size="large">
+                        {user?.name}
+                    </Button>
+                </Dropdown>
+            </Header>
 
-            <div className="dashboard-content">
-                <div className="welcome-card card">
-                    <h2 className="welcome-title">Welcome, {user?.name}! 🎉</h2>
-                    <p className="welcome-text">
-                        You have successfully logged in to your account.
-                    </p>
-                    <div className="user-info">
-                        <div className="info-item">
-                            <span className="info-label">Email:</span>
-                            <span className="info-value">{user?.email}</span>
-                        </div>
-                        <div className="info-item">
-                            <span className="info-label">User ID:</span>
-                            <span className="info-value">{user?._id}</span>
-                        </div>
+            <Content className="dashboard-content">
+                <div className="dashboard-container">
+                    <div className="welcome-section">
+                        <Title level={2}>Welcome back, {user?.name}! 👋</Title>
+                        <Text type="secondary">Here's what's happening with your business today.</Text>
                     </div>
+
+                    <Row gutter={[16, 16]}>
+                        <Col xs={24} sm={12} lg={6}>
+                            <Card variant="outlined" loading={loading}>
+                                <Statistic
+                                    title="Total Revenue"
+                                    value={stats.totalRevenue}
+                                    precision={2}
+                                    styles={{ value: { color: '#ED4192' } }}
+                                    prefix={<DollarOutlined />}
+                                />
+                            </Card>
+                        </Col>
+                        <Col xs={24} sm={12} lg={6}>
+                            <Card variant="outlined" loading={loading}>
+                                <Statistic
+                                    title="Total Bills"
+                                    value={stats.totalBills}
+                                    styles={{ value: { color: '#3f8600' } }}
+                                    prefix={<FileTextOutlined />}
+                                />
+                            </Card>
+                        </Col>
+                        <Col xs={24} sm={12} lg={6}>
+                            <Card variant="outlined" loading={loading}>
+                                <Statistic
+                                    title="Total Customers"
+                                    value={stats.totalCustomers}
+                                    styles={{ value: { color: '#1890ff' } }}
+                                    prefix={<UserOutlined />}
+                                />
+                            </Card>
+                        </Col>
+                        <Col xs={24} sm={12} lg={6}>
+                            <Card variant="outlined" loading={loading}>
+                                <Statistic
+                                    title="Total Products"
+                                    value={stats.totalProducts}
+                                    styles={{ value: { color: '#cf1322' } }}
+                                    prefix={<ShoppingOutlined />}
+                                />
+                            </Card>
+                        </Col>
+                    </Row>
+
+                    <Card title="Quick Actions" variant="outlined" style={{ marginTop: 24 }}>
+                        <Space wrap size="middle">
+                            <Button
+                                type="primary"
+                                icon={<PlusOutlined />}
+                                size="large"
+                                onClick={() => navigate('/bills/new')}
+                            >
+                                Create Bill
+                            </Button>
+                            <Button icon={<UserOutlined />} size="large" onClick={() => navigate('/customers')}>
+                                Manage Customers
+                            </Button>
+                            <Button icon={<ShoppingOutlined />} size="large" onClick={() => navigate('/products')}>
+                                Manage Products
+                            </Button>
+                            <Button icon={<FileTextOutlined />} size="large" onClick={() => navigate('/bills')}>
+                                View Bills
+                            </Button>
+                            <Button icon={<DollarOutlined />} size="large" onClick={() => navigate('/payments')}>
+                                View Payments
+                            </Button>
+                        </Space>
+                    </Card>
+
+                    {recentBills.length > 0 && (
+                        <Card title="Recent Bills" variant="outlined" style={{ marginTop: 24 }}>
+                            <div className="recent-bills-list">
+                                {recentBills.map((bill) => (
+                                    <Card
+                                        key={bill._id}
+                                        size="small"
+                                        hoverable
+                                        onClick={() => navigate(`/bills/${bill._id}`)}
+                                        style={{ marginBottom: 12 }}
+                                    >
+                                        <Row justify="space-between" align="middle">
+                                            <Col>
+                                                <Space direction="vertical" size={0}>
+                                                    <Text strong>{bill.billNumber}</Text>
+                                                    <Text type="secondary" style={{ fontSize: 12 }}>
+                                                        {bill.customerName}
+                                                    </Text>
+                                                </Space>
+                                            </Col>
+                                            <Col>
+                                                <Space direction="vertical" size={0} align="end">
+                                                    <Text strong style={{ color: '#ED4192' }}>
+                                                        ₹{bill.total.toFixed(2)}
+                                                    </Text>
+                                                    <Text type="secondary" style={{ fontSize: 12 }}>
+                                                        {new Date(bill.date).toLocaleDateString()}
+                                                    </Text>
+                                                </Space>
+                                            </Col>
+                                        </Row>
+                                    </Card>
+                                ))}
+                            </div>
+                        </Card>
+                    )}
                 </div>
-
-                <div className="features-grid">
-                    <div className="feature-card card">
-                        <div className="feature-icon">🚀</div>
-                        <h3 className="feature-title">Fast & Secure</h3>
-                        <p className="feature-description">
-                            JWT-based authentication ensures your data is secure and access is fast.
-                        </p>
-                    </div>
-
-                    <div className="feature-card card">
-                        <div className="feature-icon">⚡</div>
-                        <h3 className="feature-title">Modern Stack</h3>
-                        <p className="feature-description">
-                            Built with React, Express, and MongoDB for a modern experience.
-                        </p>
-                    </div>
-
-                    <div className="feature-card card">
-                        <div className="feature-icon">☁️</div>
-                        <h3 className="feature-title">Cloud Ready</h3>
-                        <p className="feature-description">
-                            Deployable on Vercel with serverless architecture.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
+            </Content>
+        </Layout>
     );
 }
 
