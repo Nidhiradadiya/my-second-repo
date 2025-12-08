@@ -17,6 +17,10 @@
         {
             "source": "/api/:path*",
             "destination": "/backend/api"
+        },
+        {
+            "source": "/(.*)",
+            "destination": "/frontend/index.html"
         }
     ]
 }
