@@ -19,6 +19,14 @@
             "destination": "/backend/api"
         },
         {
+            "source": "/assets/:path*",
+            "destination": "/frontend/assets/:path*"
+        },
+        {
+            "source": "/vite.svg",
+            "destination": "/frontend/vite.svg"
+        },
+        {
             "source": "/((?!assets/|.*\\..*).*)",
             "destination": "/frontend/index.html"
         }
