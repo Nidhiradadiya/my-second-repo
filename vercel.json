@@ -15,25 +15,8 @@
     ],
     "rewrites": [
         {
-            "source": "/api/(.*)",
-            "destination": "/backend/api/index.js"
-        },
-        {
-            "source": "/(.*)",
-            "destination": "/frontend/$1"
-        }
-    ],
-    "routes": [
-        {
-            "handle": "filesystem"
-        },
-        {
-            "src": "/api/(.*)",
-            "dest": "/backend/api/index.js"
-        },
-        {
-            "src": "/(.*)",
-            "dest": "/frontend/index.html"
+            "source": "/api/:path*",
+            "destination": "/backend/api"
         }
     ]
 }
