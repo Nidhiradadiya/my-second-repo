@@ -4,71 +4,118 @@
     align-items: center;
     justify-content: center;
     padding: 2rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
     position: relative;
     overflow: hidden;
+}
+
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 .auth-container::before {
     content: '';
     position: absolute;
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, rgba(237, 65, 146, 0.3) 0%, transparent 70%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
     border-radius: 50%;
-    top: -100px;
-    right: -100px;
-    animation: float 6s ease-in-out infinite;
+    top: -150px;
+    left: -150px;
+    animation: float 8s ease-in-out infinite;
+    z-index: 0;
 }
 
 .auth-container::after {
     content: '';
     position: absolute;
-    width: 300px;
-    height: 300px;
-    background: radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, transparent 70%);
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
     border-radius: 50%;
-    bottom: -50px;
-    left: -50px;
-    animation: float 8s ease-in-out infinite reverse;
+    bottom: -100px;
+    right: -100px;
+    animation: float 10s ease-in-out infinite reverse;
+    z-index: 0;
 }
 
 @keyframes float {
 
     0%,
     100% {
-        transform: translateY(0px);
+        transform: translate(0, 0);
     }
 
     50% {
-        transform: translateY(-20px);
+        transform: translate(30px, 30px);
     }
 }
 
 .auth-card {
     width: 100%;
     max-width: 420px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    /* Glassmorphism Effect */
+    background: rgba(255, 255, 255, 0.85) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
     position: relative;
     z-index: 1;
+    border-radius: 16px !important;
+    /* Overriding Ant Design card radius for softer look */
+}
+
+/* Ensure text inside is readable */
+.auth-card .ant-typography {
+    color: #1f1f1f;
 }
 
 .auth-card a {
     color: #ED4192;
     text-decoration: none;
+    font-weight: 500;
     transition: all 0.3s;
 }
 
 .auth-card a:hover {
-    opacity: 0.8;
+    color: #c03575;
     text-decoration: underline;
 }
 
 /* Make sure form items have proper spacing */
 .ant-form-item {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
+    /* Increased slightly for breathing room */
 }
 
 .ant-form-item:last-child {
     margin-bottom: 0;
+}
+
+/* Button Styling Override for Premium Feel */
+.auth-card .ant-btn-primary {
+    background: #ED4192;
+    border-color: #ED4192;
+    height: 40px;
+    font-weight: 600;
+    box-shadow: 0 4px 14px 0 rgba(237, 65, 146, 0.39);
+}
+
+.auth-card .ant-btn-primary:hover {
+    background: #ff5ca0 !important;
+    border-color: #ff5ca0 !important;
+    transform: translateY(-1px);
 }

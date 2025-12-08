@@ -37,7 +37,8 @@ api.interceptors.response.use(
         }
 
         // If error is 401 and we haven't retried yet, try refreshing token
-        if (error.response?.status === 401 && !originalRequest._retry) {
+        // Also skip if the request is for login, as 401 there means invalid credentials, not expired token
+        if (error.response?.status === 401 && !originalRequest._retry && !originalRequest.url.includes('/auth/login')) {
             originalRequest._retry = true;
 
             try {
@@ -67,7 +68,8 @@ api.interceptors.response.use(
         }
 
         // If unauthorized and not a refresh token issue, logout
-        if (error.response?.status === 401) {
+        // Ignore 401 on login page to allow handling invalid credentials
+        if (error.response?.status === 401 && !originalRequest.url.includes('/auth/login')) {
             authAPI.logout();
             window.location.href = '/login';
         }
