@@ -30,6 +30,25 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', message: 'Server is running' });
 });
 
+// Debug route for unmatched requests
+app.all('*', (req, res, next) => {
+    // Check if the request matched a previous route
+    if (res.headersSent) {
+        return next();
+    }
+
+    // If we're here, no route matched
+    console.log('Unmatched route:', req.method, req.url);
+    res.status(404).json({
+        message: 'Route not found (Debug)',
+        method: req.method,
+        url: req.url,
+        path: req.path,
+        originalUrl: req.originalUrl,
+        headers: req.headers
+    });
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
