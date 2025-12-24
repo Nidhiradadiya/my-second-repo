@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import dayjs from 'dayjs';
 import {
     Layout,
     Card,
@@ -16,6 +17,7 @@ import {
     message,
     Tag,
     Divider,
+    DatePicker,
 } from 'antd';
 import {
     ArrowLeftOutlined,
@@ -130,6 +132,7 @@ function BillForm() {
             const billData = {
                 customerId: selectedCustomer._id,
                 billType: values.billType,
+                date: values.billDate ? values.billDate.toDate() : new Date(),
                 items: items.map(item => ({
                     productId: item.productId,
                     productName: item.productName,
@@ -280,11 +283,14 @@ function BillForm() {
                     form={form}
                     layout="vertical"
                     onFinish={handleSubmit}
-                    initialValues={{ billType: 'CHALLAN' }}
+                    initialValues={{
+                        billType: 'CHALLAN',
+                        billDate: dayjs()
+                    }}
                 >
                     <Card title="Bill Details" variant="outlined" style={{ marginBottom: 24 }}>
                         <Row gutter={16}>
-                            <Col xs={24} sm={12}>
+                            <Col xs={24} sm={8}>
                                 <Form.Item
                                     name="billType"
                                     label="Bill Type"
@@ -303,7 +309,16 @@ function BillForm() {
                                     </Select>
                                 </Form.Item>
                             </Col>
-                            <Col xs={24} sm={12}>
+                            <Col xs={24} sm={8}>
+                                <Form.Item
+                                    name="billDate"
+                                    label="Bill Date"
+                                    rules={[{ required: true, message: 'Please select a date' }]}
+                                >
+                                    <DatePicker size="large" style={{ width: '100%' }} format="DD/MM/YYYY" />
+                                </Form.Item>
+                            </Col>
+                            <Col xs={24} sm={8}>
                                 <Form.Item
                                     name="customerId"
                                     label="Customer"

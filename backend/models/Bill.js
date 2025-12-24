@@ -50,7 +50,6 @@ const billSchema = new mongoose.Schema({
     billNumber: {
         type: String,
         required: true,
-        unique: true,
     },
     billType: {
         type: String,
@@ -129,5 +128,6 @@ const billSchema = new mongoose.Schema({
 billSchema.index({ billNumber: 1 });
 billSchema.index({ customerId: 1, date: -1 });
 billSchema.index({ userId: 1, date: -1 });
+billSchema.index({ customerId: 1, billNumber: 1 }, { unique: true });
 
 module.exports = mongoose.model('Bill', billSchema);

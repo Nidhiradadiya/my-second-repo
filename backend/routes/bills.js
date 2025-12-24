@@ -8,8 +8,11 @@ const { generateBillPDF } = require('../services/pdfGenerator');
 const { amountToWords } = require('../services/amountToWords');
 
 // Get next bill number
-async function getNextBillNumber(userId) {
-    const lastBill = await Bill.findOne({ userId }).sort({ billNumber: -1 });
+// Get next bill number
+async function getNextBillNumber(userId, customerId) {
+    const lastBill = await Bill.findOne({ userId })
+        .sort({ createdAt: -1 })
+        .collation({ locale: 'en_US' });
 
     if (!lastBill || !lastBill.billNumber) {
         return '1';
@@ -93,6 +96,7 @@ router.post('/', protect, async (req, res) => {
             billType,
             items,
             notes,
+            date,
             companyId,
         } = req.body;
 
@@ -140,7 +144,7 @@ router.post('/', protect, async (req, res) => {
         const closingBalance = previousBalance + total;
 
         // Generate bill number
-        const billNumber = await getNextBillNumber(req.user._id);
+        const billNumber = await getNextBillNumber(req.user._id, customer._id);
 
         // Create bill
         const bill = await Bill.create({
@@ -157,6 +161,7 @@ router.post('/', protect, async (req, res) => {
             previousBalance,
             closingBalance,
             notes,
+            date: date || Date.now(),
             companyId,
             userId: req.user._id,
         });
