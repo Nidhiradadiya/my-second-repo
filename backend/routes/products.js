@@ -3,6 +3,22 @@ const router = express.Router();
 const Product = require('../models/Product');
 const { protect } = require('../middleware/auth');
 
+// @route   GET /api/products/stats
+// @desc    Get product statistics
+// @access  Private
+router.get('/stats', protect, async (req, res) => {
+    try {
+        const total = await Product.countDocuments({
+            userId: req.user._id,
+            isActive: true
+        });
+        res.json({ total });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+});
+
 // @route   GET /api/products
 // @desc    Get all products
 // @access  Private  

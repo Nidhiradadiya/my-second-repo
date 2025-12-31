@@ -42,22 +42,21 @@ function Dashboard() {
             const currentUser = authAPI.getCurrentUser();
             setUser(currentUser);
 
-            const [customersRes, productsRes, billsRes] = await Promise.all([
-                customerAPI.getAll({ limit: 1 }),
-                productAPI.getAll({ limit: 1 }),
+            const [customersStats, productsStats, billsStats, recentBillsRes] = await Promise.all([
+                customerAPI.getStats(),
+                productAPI.getStats(),
+                billAPI.getStats(),
                 billAPI.getAll({ limit: 5 }),
             ]);
 
-            const totalRevenue = billsRes.bills.reduce((sum, bill) => sum + bill.total, 0);
-
             setStats({
-                totalCustomers: customersRes.total || 0,
-                totalProducts: productsRes.total || 0,
-                totalBills: billsRes.total || 0,
-                totalRevenue,
+                totalCustomers: customersStats.total || 0,
+                totalProducts: productsStats.total || 0,
+                totalBills: billsStats.totalBills || 0,
+                totalRevenue: billsStats.totalRevenue || 0,
             });
 
-            setRecentBills(billsRes.bills || []);
+            setRecentBills(recentBillsRes.bills || []);
         } catch (error) {
             console.error('Error loading dashboard:', error);
         } finally {

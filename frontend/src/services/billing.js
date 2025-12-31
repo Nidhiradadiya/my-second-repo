@@ -38,6 +38,11 @@ export const companyAPI = {
 
 // Customer API
 export const customerAPI = {
+    getStats: async () => {
+        const response = await api.get('/customers/stats');
+        return response.data;
+    },
+
     getAll: async (params = {}) => {
         const response = await api.get('/customers', { params });
         return response.data;
@@ -76,6 +81,11 @@ export const customerAPI = {
 
 // Product API
 export const productAPI = {
+    getStats: async () => {
+        const response = await api.get('/products/stats');
+        return response.data;
+    },
+
     getAll: async (params = {}) => {
         const response = await api.get('/products', { params });
         return response.data;
@@ -109,6 +119,11 @@ export const productAPI = {
 
 // Bill API
 export const billAPI = {
+    getStats: async () => {
+        const response = await api.get('/bills/stats');
+        return response.data;
+    },
+
     getAll: async (params = {}) => {
         const response = await api.get('/bills', { params });
         return response.data;

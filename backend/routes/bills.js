@@ -22,6 +22,29 @@ async function getNextBillNumber(userId, customerId) {
     return String(lastNumber + 1);
 }
 
+// @route   GET /api/bills/stats
+// @desc    Get bill statistics
+// @access  Private
+router.get('/stats', protect, async (req, res) => {
+    try {
+        const stats = await Bill.aggregate([
+            { $match: { userId: req.user._id } },
+            {
+                $group: {
+                    _id: null,
+                    totalRevenue: { $sum: '$total' },
+                    totalBills: { $sum: 1 }
+                }
+            }
+        ]);
+
+        res.json(stats[0] || { totalRevenue: 0, totalBills: 0 });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+});
+
 // @route   GET /api/bills
 // @desc    Get all bills
 // @access  Private

@@ -5,6 +5,19 @@ const Bill = require('../models/Bill');
 const Payment = require('../models/Payment');
 const { protect } = require('../middleware/auth');
 
+// @route   GET /api/customers/stats
+// @desc    Get customer statistics
+// @access  Private
+router.get('/stats', protect, async (req, res) => {
+    try {
+        const total = await Customer.countDocuments({ userId: req.user._id });
+        res.json({ total });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+});
+
 // @route   GET /api/customers
 // @desc    Get all customers
 // @access  Private
