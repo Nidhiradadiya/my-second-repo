@@ -2,6 +2,7 @@ import React from 'react';
 import { Layout } from 'antd';
 import Header from './Header';
 import Footer from './Footer';
+import bgNature from '../assets/bg-nature.png';
 
 const { Content } = Layout;
 
@@ -9,6 +10,8 @@ const SystemLayout = ({ children }) => {
     return (
         <Layout style={{ minHeight: '100vh', position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
             {/* Background Layer */}
+
+
             <div
                 style={{
                     position: 'absolute',
@@ -16,7 +19,7 @@ const SystemLayout = ({ children }) => {
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    background: `#0f172a url('/bg-nature.png') center/cover no-repeat`,
+                    background: `#0f172a url(${bgNature}) center/cover no-repeat`,
                     zIndex: 0,
                 }}
             />

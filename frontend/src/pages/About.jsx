@@ -7,8 +7,8 @@ const { Content } = Layout;
 const { Title, Text, Paragraph } = Typography;
 
 import Header from '../components/Header';
-
 import Footer from '../components/Footer';
+import bgNature from '../assets/bg-nature.png';
 
 const About = () => {
     const navigate = useNavigate();
@@ -23,7 +23,7 @@ const About = () => {
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    background: `#0f172a url('/bg-nature.png') center/cover no-repeat`,
+                    background: `#0f172a url(${bgNature}) center/cover no-repeat`,
                     zIndex: 0,
                 }}
             />

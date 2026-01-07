@@ -3,6 +3,7 @@ import { Layout } from 'antd';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import '../pages/Auth.css';
+import bgNature from '../assets/bg-nature.png';
 
 const { Content } = Layout;
 
@@ -18,7 +19,7 @@ const AuthLayout = ({ children, title }) => {
                     right: 0,
                     bottom: 0,
                     /* Single, clean background declaration using the local asset */
-                    background: `#0f172a url('/bg-nature.png') center/cover no-repeat`,
+                    background: `#0f172a url(${bgNature}) center/cover no-repeat`,
                     zIndex: 0,
                 }}
             />

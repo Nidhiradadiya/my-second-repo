@@ -3,6 +3,7 @@ import { Layout, Button, Space, Drawer, Grid, Dropdown, Avatar, Menu } from 'ant
 import { useNavigate, useLocation } from 'react-router-dom';
 import { MenuOutlined, UserOutlined, SettingOutlined, LogoutOutlined } from '@ant-design/icons';
 import { authAPI } from '../services/api';
+import logo from '../assets/logo.png';
 
 const { Header: AntHeader } = Layout;
 const { useBreakpoint } = Grid;
@@ -83,9 +84,12 @@ const Header = () => {
                 position: 'relative'
             }}
         >
+
+
+
             {/* Logo */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }} onClick={() => navigate('/')}>
-                <img src="/logo.png" alt="PR Logo" style={{ height: '40px' }} />
+                <img src={logo} alt="PR Logo" style={{ height: '40px' }} />
                 <span style={{ color: 'white', fontSize: '20px', fontWeight: 'bold', letterSpacing: '1px' }}>PR</span>
             </div>
 

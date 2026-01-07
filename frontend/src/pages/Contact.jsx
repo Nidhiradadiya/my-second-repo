@@ -2,14 +2,15 @@ import React from 'react';
 import { Layout, Typography, Space, Button, Form, Input, Row, Col, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { MailOutlined, PhoneOutlined, EnvironmentOutlined, SendOutlined } from '@ant-design/icons';
+import bgNature from '../assets/bg-nature.png';
 
 const { Content } = Layout;
 const { Title, Text, Paragraph } = Typography;
 const { TextArea } = Input;
 
 import Header from '../components/Header';
-
 import Footer from '../components/Footer';
+
 
 const Contact = () => {
     const navigate = useNavigate();
@@ -31,7 +32,7 @@ const Contact = () => {
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    background: `#0f172a url('/bg-nature.png') center/cover no-repeat`,
+                    background: `#0f172a url(${bgNature}) center/cover no-repeat`,
                     zIndex: 0,
                 }}
             />
