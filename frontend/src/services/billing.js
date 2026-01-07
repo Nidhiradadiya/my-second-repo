@@ -193,3 +193,23 @@ export const paymentAPI = {
         return response.data;
     },
 };
+
+// Backup API
+export const backupAPI = {
+    download: async () => {
+        const response = await api.get('/backup', {
+            responseType: 'blob',
+        });
+
+        // Create download link
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `backup-${new Date().toISOString().split('T')[0]}.json`);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
+    },
+};
+

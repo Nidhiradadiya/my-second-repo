@@ -22,8 +22,9 @@ import {
     UploadOutlined,
     PictureOutlined,
     EditOutlined,
+    DownloadOutlined,
 } from '@ant-design/icons';
-import { companyAPI } from '../../services/billing';
+import { companyAPI, backupAPI } from '../../services/billing';
 import '../customers/Customers.css';
 
 const { Header, Content } = Layout;
@@ -35,6 +36,7 @@ function CompanySettings() {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [downloading, setDownloading] = useState(false);
     const [logoFile, setLogoFile] = useState(null);
     const [signatureFile, setSignatureFile] = useState(null);
     const [company, setCompany] = useState(null);
@@ -138,6 +140,19 @@ function CompanySettings() {
             setSignatureFile(null);
         },
         fileList: signatureFile ? [signatureFile] : [],
+    };
+
+    const handleDownloadBackup = async () => {
+        setDownloading(true);
+        try {
+            await backupAPI.download();
+            message.success('Backup downloaded successfully');
+        } catch (error) {
+            message.error('Failed to download backup');
+            console.error(error);
+        } finally {
+            setDownloading(false);
+        }
     };
 
     if (loading) {
@@ -289,6 +304,26 @@ function CompanySettings() {
                                     </>
                                 )}
                             </Form.List>
+                        </Card>
+
+                        <Card title="Data Management" variant="outlined" extra={<DownloadOutlined />}>
+                            <Row align="middle" justify="space-between">
+                                <Col>
+                                    <Text strong>Database Backup</Text>
+                                    <div style={{ color: '#888', fontSize: '12px' }}>
+                                        Download a full backup of your data (Customers, Products, Bills, etc.) as a JSON file.
+                                    </div>
+                                </Col>
+                                <Col>
+                                    <Button
+                                        icon={<DownloadOutlined />}
+                                        onClick={handleDownloadBackup}
+                                        loading={downloading}
+                                    >
+                                        Download Backup
+                                    </Button>
+                                </Col>
+                            </Row>
                         </Card>
 
                         <Form.Item>
