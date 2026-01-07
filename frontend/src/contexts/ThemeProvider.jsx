@@ -27,21 +27,23 @@ export const ThemeProvider = ({ children }) => {
 
     const themeConfig = {
         token: {
-            colorPrimary: '#ED4192', // Pink primary color
+            colorPrimary: '#0B57D0', // Google Blue
             borderRadius: 16, // Rounded corners (Blossom style)
             fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
             fontSize: 14,
-            colorBgLayout: isDarkMode ? '#141414' : '#f5f5f5',
+            colorBgLayout: isDarkMode ? '#000000' : '#f0f4f9', // Black vs Light Blue-Gray
+            colorBgContainer: isDarkMode ? '#1F1F1F' : '#ffffff', // Dark Gray vs White
         },
         algorithm: isDarkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
         components: {
             Layout: {
-                headerBg: isDarkMode ? '#1f1f1f' : '#ffffff',
-                siderBg: isDarkMode ? '#1f1f1f' : '#ffffff',
-                bodyBg: isDarkMode ? '#141414' : '#f5f5f5',
+                headerBg: isDarkMode ? '#1F1F1F' : '#ffffff',
+                siderBg: isDarkMode ? '#1F1F1F' : '#ffffff',
+                bodyBg: isDarkMode ? '#000000' : '#f0f4f9',
             },
             Card: {
                 borderRadiusLG: 16,
+                colorBgContainer: isDarkMode ? '#1F1F1F' : '#ffffff',
                 boxShadowTertiary: isDarkMode
                     ? '0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 1px 6px -1px rgba(0, 0, 0, 0.2)'
                     : '0 1px 2px 0 rgba(0, 0, 0, 0.03), 0 1px 6px -1px rgba(0, 0, 0, 0.02)',

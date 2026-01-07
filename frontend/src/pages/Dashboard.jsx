@@ -1,23 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Layout, Card, Row, Col, Statistic, Button, Space, Typography, Dropdown, Menu } from 'antd';
+import { Card, Row, Col, Statistic, Button, Space, Typography } from 'antd';
 import {
     DollarOutlined,
     UserOutlined,
     FileTextOutlined,
     ShoppingOutlined,
     PlusOutlined,
-    SettingOutlined,
-    LogoutOutlined,
-    MoonOutlined,
-    SunOutlined,
 } from '@ant-design/icons';
 import { useTheme } from '../contexts/ThemeProvider';
 import { authAPI } from '../services/api';
 import { customerAPI, productAPI, billAPI } from '../services/billing';
-import './Dashboard.css';
 
-const { Header, Content } = Layout;
 const { Title, Text } = Typography;
 
 function Dashboard() {
@@ -64,164 +58,119 @@ function Dashboard() {
         }
     };
 
-    const handleLogout = () => {
-        authAPI.logout();
-        navigate('/login');
-    };
-
-    const userMenuItems = [
-        {
-            key: 'theme',
-            icon: isDarkMode ? <SunOutlined /> : <MoonOutlined />,
-            label: isDarkMode ? 'Light Mode' : 'Dark Mode',
-            onClick: toggleTheme,
-        },
-        {
-            key: 'settings',
-            icon: <SettingOutlined />,
-            label: 'Company Settings',
-            onClick: () => navigate('/settings/company'),
-        },
-        {
-            type: 'divider',
-        },
-        {
-            key: 'logout',
-            icon: <LogoutOutlined />,
-            label: 'Logout',
-            danger: true,
-            onClick: handleLogout,
-        },
-    ];
-
     return (
-        <Layout className="dashboard-layout">
-            <Header className="dashboard-header">
-                <Title level={3} style={{ margin: 0, color: '#ED4192' }}>
-                    Billing System
-                </Title>
-                <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
-                    <Button type="text" icon={<UserOutlined />} size="large">
-                        {user?.name}
-                    </Button>
-                </Dropdown>
-            </Header>
+        <div>
+            <div style={{ marginBottom: 24 }}>
+                <Title level={2}>Welcome back, {user?.name}! 👋</Title>
+                <Text type="secondary">Here's what's happening with your business today.</Text>
+            </div>
 
-            <Content className="dashboard-content">
-                <div className="dashboard-container">
-                    <div className="welcome-section">
-                        <Title level={2}>Welcome back, {user?.name}! 👋</Title>
-                        <Text type="secondary">Here's what's happening with your business today.</Text>
-                    </div>
-
-                    <Row gutter={[16, 16]}>
-                        <Col xs={24} sm={12} lg={6}>
-                            <Card variant="outlined" loading={loading}>
-                                <Statistic
-                                    title="Total Revenue"
-                                    value={stats.totalRevenue}
-                                    precision={2}
-                                    styles={{ value: { color: '#ED4192' } }}
-                                    prefix={<DollarOutlined />}
-                                />
-                            </Card>
-                        </Col>
-                        <Col xs={24} sm={12} lg={6}>
-                            <Card variant="outlined" loading={loading}>
-                                <Statistic
-                                    title="Total Bills"
-                                    value={stats.totalBills}
-                                    styles={{ value: { color: '#3f8600' } }}
-                                    prefix={<FileTextOutlined />}
-                                />
-                            </Card>
-                        </Col>
-                        <Col xs={24} sm={12} lg={6}>
-                            <Card variant="outlined" loading={loading}>
-                                <Statistic
-                                    title="Total Customers"
-                                    value={stats.totalCustomers}
-                                    styles={{ value: { color: '#1890ff' } }}
-                                    prefix={<UserOutlined />}
-                                />
-                            </Card>
-                        </Col>
-                        <Col xs={24} sm={12} lg={6}>
-                            <Card variant="outlined" loading={loading}>
-                                <Statistic
-                                    title="Total Products"
-                                    value={stats.totalProducts}
-                                    styles={{ value: { color: '#cf1322' } }}
-                                    prefix={<ShoppingOutlined />}
-                                />
-                            </Card>
-                        </Col>
-                    </Row>
-
-                    <Card title="Quick Actions" variant="outlined" style={{ marginTop: 24 }}>
-                        <Space wrap size="middle">
-                            <Button
-                                type="primary"
-                                icon={<PlusOutlined />}
-                                size="large"
-                                onClick={() => navigate('/bills/new')}
-                            >
-                                Create Bill
-                            </Button>
-                            <Button icon={<UserOutlined />} size="large" onClick={() => navigate('/customers')}>
-                                Manage Customers
-                            </Button>
-                            <Button icon={<ShoppingOutlined />} size="large" onClick={() => navigate('/products')}>
-                                Manage Products
-                            </Button>
-                            <Button icon={<FileTextOutlined />} size="large" onClick={() => navigate('/bills')}>
-                                View Bills
-                            </Button>
-                            <Button icon={<DollarOutlined />} size="large" onClick={() => navigate('/payments')}>
-                                View Payments
-                            </Button>
-                        </Space>
+            <Row gutter={[16, 16]}>
+                <Col xs={24} sm={12} lg={6}>
+                    <Card variant="outlined" loading={loading}>
+                        <Statistic
+                            title="Total Revenue"
+                            value={stats.totalRevenue}
+                            precision={2}
+                            styles={{ value: { color: '#0B57D0' } }}
+                            prefix={<DollarOutlined />}
+                        />
                     </Card>
+                </Col>
+                <Col xs={24} sm={12} lg={6}>
+                    <Card variant="outlined" loading={loading}>
+                        <Statistic
+                            title="Total Bills"
+                            value={stats.totalBills}
+                            styles={{ value: { color: '#3f8600' } }}
+                            prefix={<FileTextOutlined />}
+                        />
+                    </Card>
+                </Col>
+                <Col xs={24} sm={12} lg={6}>
+                    <Card variant="outlined" loading={loading}>
+                        <Statistic
+                            title="Total Customers"
+                            value={stats.totalCustomers}
+                            styles={{ value: { color: '#1890ff' } }}
+                            prefix={<UserOutlined />}
+                        />
+                    </Card>
+                </Col>
+                <Col xs={24} sm={12} lg={6}>
+                    <Card variant="outlined" loading={loading}>
+                        <Statistic
+                            title="Total Products"
+                            value={stats.totalProducts}
+                            styles={{ value: { color: '#cf1322' } }}
+                            prefix={<ShoppingOutlined />}
+                        />
+                    </Card>
+                </Col>
+            </Row>
 
-                    {recentBills.length > 0 && (
-                        <Card title="Recent Bills" variant="outlined" style={{ marginTop: 24 }}>
-                            <div className="recent-bills-list">
-                                {recentBills.map((bill) => (
-                                    <Card
-                                        key={bill._id}
-                                        size="small"
-                                        hoverable
-                                        onClick={() => navigate(`/bills/${bill._id}`)}
-                                        style={{ marginBottom: 12 }}
-                                    >
-                                        <Row justify="space-between" align="middle">
-                                            <Col>
-                                                <Space direction="vertical" size={0}>
-                                                    <Text strong>{bill.billNumber}</Text>
-                                                    <Text type="secondary" style={{ fontSize: 12 }}>
-                                                        {bill.customerName}
-                                                    </Text>
-                                                </Space>
-                                            </Col>
-                                            <Col>
-                                                <Space direction="vertical" size={0} align="end">
-                                                    <Text strong style={{ color: '#ED4192' }}>
-                                                        ₹{bill.total.toFixed(2)}
-                                                    </Text>
-                                                    <Text type="secondary" style={{ fontSize: 12 }}>
-                                                        {new Date(bill.date).toLocaleDateString()}
-                                                    </Text>
-                                                </Space>
-                                            </Col>
-                                        </Row>
-                                    </Card>
-                                ))}
-                            </div>
-                        </Card>
-                    )}
-                </div>
-            </Content>
-        </Layout>
+            <Card title="Quick Actions" variant="outlined" style={{ marginTop: 24 }}>
+                <Space wrap size="middle">
+                    <Button
+                        type="primary"
+                        icon={<PlusOutlined />}
+                        size="large"
+                        onClick={() => navigate('/bills/new')}
+                    >
+                        Create Bill
+                    </Button>
+                    <Button icon={<UserOutlined />} size="large" onClick={() => navigate('/customers')}>
+                        Manage Customers
+                    </Button>
+                    <Button icon={<ShoppingOutlined />} size="large" onClick={() => navigate('/products')}>
+                        Manage Products
+                    </Button>
+                    <Button icon={<FileTextOutlined />} size="large" onClick={() => navigate('/bills')}>
+                        View Bills
+                    </Button>
+                    <Button icon={<DollarOutlined />} size="large" onClick={() => navigate('/payments')}>
+                        View Payments
+                    </Button>
+                </Space>
+            </Card>
+
+            {recentBills.length > 0 && (
+                <Card title="Recent Bills" variant="outlined" style={{ marginTop: 24 }}>
+                    <div>
+                        {recentBills.map((bill) => (
+                            <Card
+                                key={bill._id}
+                                size="small"
+                                hoverable
+                                onClick={() => navigate(`/bills/${bill._id}`)}
+                                style={{ marginBottom: 12 }}
+                            >
+                                <Row justify="space-between" align="middle">
+                                    <Col>
+                                        <Space direction="vertical" size={0}>
+                                            <Text strong>{bill.billNumber}</Text>
+                                            <Text type="secondary" style={{ fontSize: 12 }}>
+                                                {bill.customerName}
+                                            </Text>
+                                        </Space>
+                                    </Col>
+                                    <Col>
+                                        <Space direction="vertical" size={0} align="end">
+                                            <Text strong style={{ color: '#0B57D0' }}>
+                                                ₹{bill.total.toFixed(2)}
+                                            </Text>
+                                            <Text type="secondary" style={{ fontSize: 12 }}>
+                                                {new Date(bill.date).toLocaleDateString()}
+                                            </Text>
+                                        </Space>
+                                    </Col>
+                                </Row>
+                            </Card>
+                        ))}
+                    </div>
+                </Card>
+            )}
+        </div>
     );
 }
 

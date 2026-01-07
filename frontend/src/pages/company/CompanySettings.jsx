@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-    Layout,
     Card,
     Form,
     Input,
@@ -25,9 +24,7 @@ import {
     DownloadOutlined,
 } from '@ant-design/icons';
 import { companyAPI, backupAPI } from '../../services/billing';
-import '../customers/Customers.css';
 
-const { Header, Content } = Layout;
 const { Title, Text } = Typography;
 const { TextArea } = Input;
 
@@ -164,8 +161,8 @@ function CompanySettings() {
     }
 
     return (
-        <Layout className="page-layout">
-            <Header className="page-header">
+        <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ marginBottom: 24, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Space>
                     <Button
                         type="text"
@@ -176,9 +173,9 @@ function CompanySettings() {
                         Company Settings
                     </Title>
                 </Space>
-            </Header>
+            </div>
 
-            <Content className="page-content">
+            <div style={{ flex: 1, overflowY: 'auto' }}>
                 <Form
                     form={form}
                     layout="vertical"
@@ -344,8 +341,8 @@ function CompanySettings() {
                         </Form.Item>
                     </Space>
                 </Form>
-            </Content>
-        </Layout>
+            </div>
+        </div>
     );
 }
 

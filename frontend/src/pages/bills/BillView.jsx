@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
-    Layout,
     Card,
     Table,
     Button,
@@ -22,9 +21,7 @@ import {
     PrinterOutlined,
 } from '@ant-design/icons';
 import { billAPI } from '../../services/billing';
-import '../customers/Customers.css';
 
-const { Header, Content } = Layout;
 const { Title, Text } = Typography;
 
 function BillView() {
@@ -135,7 +132,7 @@ function BillView() {
             width: 140,
             align: 'right',
             render: (amount) => (
-                <Text strong style={{ color: '#ED4192' }}>
+                <Text strong style={{ color: '#0B57D0' }}>
                     ₹{amount.toFixed(2)}
                 </Text>
             ),
@@ -143,8 +140,8 @@ function BillView() {
     ];
 
     return (
-        <Layout className="page-layout">
-            <Header className="page-header">
+        <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ marginBottom: 24, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Space>
                     <Button
                         type="text"
@@ -180,9 +177,9 @@ function BillView() {
                         Download PDF
                     </Button>
                 </Space>
-            </Header>
+            </div>
 
-            <Content className="page-content">
+            <div style={{ flex: 1, overflowY: 'auto' }}>
                 <Space direction="vertical" size="large" style={{ width: '100%' }}>
                     <Card title="Customer Details" variant="outlined">
                         <Descriptions column={2}>
@@ -222,7 +219,7 @@ function BillView() {
                                             <Text strong style={{ fontSize: 16 }}>Total</Text>
                                         </Table.Summary.Cell>
                                         <Table.Summary.Cell index={1} align="right">
-                                            <Text strong style={{ fontSize: 16, color: '#ED4192' }}>
+                                            <Text strong style={{ fontSize: 16, color: '#0B57D0' }}>
                                                 ₹{bill.total.toFixed(2)}
                                             </Text>
                                         </Table.Summary.Cell>
@@ -255,8 +252,8 @@ function BillView() {
                         </Card>
                     )}
                 </Space>
-            </Content>
-        </Layout>
+            </div>
+        </div>
     );
 }
 

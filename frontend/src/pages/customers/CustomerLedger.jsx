@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
-    Layout,
     Card,
     Table,
     Button,
@@ -28,9 +27,7 @@ import {
 } from '@ant-design/icons';
 import { customerAPI, paymentAPI } from '../../services/billing';
 import dayjs from 'dayjs';
-import '../customers/Customers.css';
 
-const { Header, Content } = Layout;
 const { Title, Text } = Typography;
 const { TextArea } = Input;
 
@@ -122,7 +119,7 @@ function CustomerLedger() {
             key: 'debit',
             align: 'right',
             render: (debit) => debit > 0 ? (
-                <span style={{ color: '#ED4192', fontWeight: 600 }}>
+                <span style={{ color: '#0B57D0', fontWeight: 600 }}>
                     ₹{debit.toFixed(2)}
                 </span>
             ) : '-',
@@ -147,8 +144,8 @@ function CustomerLedger() {
     ];
 
     return (
-        <Layout className="page-layout">
-            <Header className="page-header">
+        <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ marginBottom: 24, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Space>
                     <Button
                         type="text"
@@ -165,9 +162,9 @@ function CustomerLedger() {
                 <Button type="primary" icon={<DollarOutlined />} onClick={() => setModalVisible(true)}>
                     Record Payment
                 </Button>
-            </Header>
+            </div>
 
-            <Content className="page-content">
+            <div style={{ flex: 1, overflowY: 'auto' }}>
                 <Space direction="vertical" size="large" style={{ width: '100%' }}>
                     <Row gutter={[16, 16]}>
                         <Col xs={24} sm={12} lg={6}>
@@ -303,8 +300,8 @@ function CustomerLedger() {
                         </Form.Item>
                     </Form>
                 </Modal>
-            </Content>
-        </Layout>
+            </div>
+        </div>
     );
 }
 

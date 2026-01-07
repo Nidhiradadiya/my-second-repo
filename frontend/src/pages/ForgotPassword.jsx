@@ -1,78 +1,69 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Form, Input, Button, Typography, message } from 'antd';
+import { MailOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { authAPI } from '../services/api';
+import AuthLayout from '../components/AuthLayout';
 import './Auth.css';
 
+const { Text } = Typography;
+
 function ForgotPassword() {
-    const [email, setEmail] = useState('');
-    const [message, setMessage] = useState('');
-    const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const onFinish = async (values) => {
         setLoading(true);
-        setError('');
-        setMessage('');
-
         try {
-            const response = await authAPI.forgotPassword(email);
-            setMessage(response.message);
-            setEmail(''); // Clear form
+            const response = await authAPI.forgotPassword(values.email);
+            message.success(response.message || 'If that email exists, a reset link has been sent.');
         } catch (err) {
-            setError(err.response?.data?.message || 'Failed to send reset email. Please try again.');
+            message.error(err.response?.data?.message || 'Failed to send reset email. Please try again.');
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="auth-container">
-            <div className="auth-card card">
-                <div className="auth-header">
-                    <h1 className="auth-title">Forgot Password?</h1>
-                    <p className="auth-subtitle">Enter your email to receive a reset link</p>
-                </div>
-
-                <form onSubmit={handleSubmit} className="auth-form">
-                    <div className="form-group">
-                        <label htmlFor="email" className="form-label">Email Address</label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            className="input"
-                            placeholder="Enter your email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
-                    </div>
-
-                    {error && <div className="error">{error}</div>}
-                    {message && <div className="success">{message}</div>}
-
-                    <button type="submit" className="btn btn-primary" disabled={loading}>
-                        {loading ? 'Sending...' : 'Send Reset Link'}
-                    </button>
-                </form>
-
-                <div className="auth-footer">
-                    <p>
-                        Remember your password?{' '}
-                        <Link to="/login" className="link">
-                            Sign in
-                        </Link>
-                    </p>
-                </div>
+        <AuthLayout title="Forgot Password?">
+            <div style={{ textAlign: 'center', marginBottom: 24 }}>
+                <Text style={{ fontSize: 16 }}>No worries, we'll send you reset instructions.</Text>
             </div>
 
-            <div className="bg-decoration">
-                <div className="circle circle-1"></div>
-                <div className="circle circle-2"></div>
-                <div className="circle circle-3"></div>
-            </div>
-        </div>
+            <Form
+                name="forgot_password"
+                layout="vertical"
+                onFinish={onFinish}
+                size="large"
+                className="glass-form"
+            >
+                <Form.Item
+                    name="email"
+                    label="Email"
+                    rules={[
+                        { required: true, message: 'Please input your email!' },
+                        { type: 'email', message: 'Please enter a valid email!' }
+                    ]}
+                >
+                    <Input
+                        variant="borderless"
+                        suffix={<MailOutlined />}
+                        placeholder="Enter your email"
+                    />
+                </Form.Item>
+
+                <Form.Item>
+                    <Button type="primary" htmlType="submit" block loading={loading} className="login-btn">
+                        Send Reset Link
+                    </Button>
+                </Form.Item>
+
+                <div style={{ textAlign: 'center' }}>
+                    <Link to="/login" style={{ display: 'inline-flex', alignItems: 'center', gap: 4, color: '#333', fontWeight: 500 }}>
+                        <ArrowLeftOutlined /> Back to Login
+                    </Link>
+                </div>
+            </Form>
+        </AuthLayout>
     );
 }
 

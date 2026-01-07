@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import {
-    Layout,
     Card,
     Form,
     Select,
@@ -26,9 +25,7 @@ import {
     SaveOutlined,
 } from '@ant-design/icons';
 import { billAPI, customerAPI, productAPI } from '../../services/billing';
-import '../customers/Customers.css';
 
-const { Header, Content } = Layout;
 const { Title, Text } = Typography;
 const { TextArea } = Input;
 
@@ -240,7 +237,7 @@ function BillForm() {
             width: 140,
             align: 'right',
             render: (_, record) => (
-                <Text strong style={{ color: '#ED4192' }}>
+                <Text strong style={{ color: '#0B57D0' }}>
                     ₹{(record.quantity * record.rate).toFixed(2)}
                 </Text>
             ),
@@ -264,8 +261,8 @@ function BillForm() {
     ];
 
     return (
-        <Layout className="page-layout">
-            <Header className="page-header">
+        <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ marginBottom: 24, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Space>
                     <Button
                         type="text"
@@ -276,9 +273,9 @@ function BillForm() {
                         Create New Bill
                     </Title>
                 </Space>
-            </Header>
+            </div>
 
-            <Content className="page-content">
+            <div style={{ flex: 1, overflowY: 'auto' }}>
                 <Form
                     form={form}
                     layout="vertical"
@@ -383,7 +380,7 @@ function BillForm() {
                                     )}
                                     <Row justify="space-between">
                                         <Text strong style={{ fontSize: 16 }}>Total:</Text>
-                                        <Text strong style={{ fontSize: 16, color: '#ED4192' }}>
+                                        <Text strong style={{ fontSize: 16, color: '#0B57D0' }}>
                                             ₹{calculateTotal().toFixed(2)}
                                         </Text>
                                     </Row>
@@ -418,8 +415,8 @@ function BillForm() {
                         </Space>
                     </Form.Item>
                 </Form>
-            </Content>
-        </Layout>
+            </div>
+        </div>
     );
 }
 

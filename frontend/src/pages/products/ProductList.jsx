@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-    Layout,
     Table,
     Button,
     Input,
@@ -24,9 +23,7 @@ import {
     ArrowLeftOutlined,
 } from '@ant-design/icons';
 import { productAPI } from '../../services/billing';
-import '../customers/Customers.css';
 
-const { Header, Content } = Layout;
 const { Title } = Typography;
 const { TextArea } = Input;
 
@@ -172,8 +169,8 @@ function ProductList() {
     ];
 
     return (
-        <Layout className="page-layout">
-            <Header className="page-header">
+        <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ marginBottom: 24, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Space>
                     <Button
                         type="text"
@@ -187,9 +184,9 @@ function ProductList() {
                 <Button type="primary" icon={<PlusOutlined />} onClick={() => handleOpenModal()}>
                     Add Product
                 </Button>
-            </Header>
+            </div>
 
-            <Content className="page-content">
+            <div style={{ flex: 1 }}>
                 <Space direction="vertical" size="large" style={{ width: '100%' }}>
                     <Input.Search
                         placeholder="Search products..."
@@ -295,8 +292,8 @@ function ProductList() {
                         </Form.Item>
                     </Form>
                 </Modal>
-            </Content>
-        </Layout>
+            </div>
+        </div>
     );
 }
 

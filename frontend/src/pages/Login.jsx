@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Form, Input, Button, Card, Typography, Space, message, Alert } from 'antd';
-import { MailOutlined, LockOutlined } from '@ant-design/icons';
+import { Form, Input, Button, Alert, message, Checkbox, Typography } from 'antd';
+import { MailOutlined, LockOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { authAPI } from '../services/api';
+import AuthLayout from '../components/AuthLayout';
 import './Auth.css';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 function Login() {
     const navigate = useNavigate();
@@ -13,109 +14,96 @@ function Login() {
     const [error, setError] = useState(null);
 
     const handleSubmit = async (values) => {
-        console.log('Form submitted with:', values);
         setLoading(true);
         setError(null);
-
         try {
-            console.log('Attempting login...');
-            const response = await authAPI.login(values);
-            console.log('Login response:', response);
+            await authAPI.login(values);
             message.success('Login successful!');
             navigate('/dashboard');
         } catch (error) {
-            console.log('Login error caught:', error);
-            console.log('Error response:', error.response);
-            console.log('Error message:', error.message);
-
             let errorMessage = 'Login failed. Please try again.';
-
             if (error.message === 'Network Error') {
                 errorMessage = 'Cannot connect to server. Please check your connection.';
             } else if (error.response?.data?.message) {
                 errorMessage = error.response.data.message;
-            } else if (error.response?.status === 404) {
-                errorMessage = 'User not found';
             }
-
-            console.log('Setting error message:', errorMessage);
             setError(errorMessage);
-            message.error(errorMessage);
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="auth-container">
-            <Card className="auth-card" variant="outlined">
-                <Space direction="vertical" size="large" style={{ width: '100%', textAlign: 'center' }}>
-                    <div>
-                        <Title level={2}>Welcome Back</Title>
-                        <Text type="secondary">Sign in to your billing account</Text>
-                    </div>
+        <AuthLayout title="Login">
+            {error && (
+                <Alert
+                    message={error}
+                    type="error"
+                    showIcon
+                    closable
+                    onClose={() => setError(null)}
+                    style={{ marginBottom: 24, background: 'rgba(255,0,0,0.1)', border: 'none' }}
+                />
+            )}
 
-                    {error && (
-                        <Alert
-                            message="Error"
-                            description={error}
-                            type="error"
-                            closable
-                            onClose={() => setError(null)}
-                            showIcon
-                            style={{ textAlign: 'left' }}
-                        />
-                    )}
+            <Form
+                name="login"
+                onFinish={handleSubmit}
+                layout="vertical"
+                requiredMark={false}
+                size="large"
+                className="glass-form"
+            >
+                <Form.Item
+                    name="email"
+                    label="Email"
+                    rules={[
+                        { required: true, message: 'Please enter your email' },
+                        { type: 'email', message: 'Please enter a valid email' }
+                    ]}
+                >
+                    <Input
+                        variant="borderless"
+                        suffix={<MailOutlined />}
+                        placeholder=""
+                        disabled={loading}
+                    />
+                </Form.Item>
 
-                    <Form
-                        name="login"
-                        onFinish={handleSubmit}
-                        layout="vertical"
-                        requiredMark={false}
-                        size="large"
-                    >
-                        <Form.Item
-                            name="email"
-                            rules={[
-                                { required: true, message: 'Please enter your email' },
-                                { type: 'email', message: 'Please enter a valid email' }
-                            ]}
-                        >
-                            <Input
-                                prefix={<MailOutlined />}
-                                placeholder="Email address"
-                                disabled={loading}
-                            />
-                        </Form.Item>
+                <Form.Item
+                    name="password"
+                    label="Password"
+                    rules={[{ required: true, message: 'Please enter your password' }]}
+                >
+                    <Input.Password
+                        variant="borderless"
+                        suffix={<LockOutlined />}
+                        iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+                        placeholder=""
+                        disabled={loading}
+                    />
+                </Form.Item>
 
-                        <Form.Item
-                            name="password"
-                            rules={[
-                                { required: true, message: 'Please enter your password' },
-                                { min: 6, message: 'Password must be at least 6 characters' }
-                            ]}
-                        >
-                            <Input.Password
-                                prefix={<LockOutlined />}
-                                placeholder="Password"
-                                disabled={loading}
-                            />
-                        </Form.Item>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+                    <Checkbox style={{ color: '#333' }}>Remember me</Checkbox>
+                    <Link to="/forgot-password" style={{ color: '#333', fontWeight: 500 }}>
+                        Forgot Password?
+                    </Link>
+                </div>
 
-                        <Form.Item>
-                            <Button type="primary" htmlType="submit" block loading={loading}>
-                                {loading ? 'Signing in...' : 'Sign In'}
-                            </Button>
-                        </Form.Item>
-                    </Form>
+                <Form.Item>
+                    <Button type="primary" htmlType="submit" block loading={loading} className="login-btn">
+                        {loading ? 'Logging in...' : 'Login'}
+                    </Button>
+                </Form.Item>
 
-                    <Space separator="·">
-                        <Link to="/forgot-password">Forgot Password?</Link>
-                        <Link to="/register">Create Account</Link>
-                    </Space>
-                </Space>
-            </Card>
-        </div>
+                <div style={{ textAlign: 'center', marginTop: 16 }}>
+                    <Text type="secondary" style={{ color: '#555' }}>
+                        Don't have an account? <Link to="/register" style={{ color: '#333', fontWeight: 600 }}>Register</Link>
+                    </Text>
+                </div>
+            </Form>
+        </AuthLayout>
     );
 }
 

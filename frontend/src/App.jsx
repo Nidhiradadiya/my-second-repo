@@ -15,6 +15,10 @@ import BillList from './pages/bills/BillList';
 import BillView from './pages/bills/BillView';
 import PaymentList from './pages/payments/PaymentList';
 import NotFound from './pages/NotFound';
+import LandingPage from './pages/LandingPage';
+import About from './pages/About'; // Import About
+import Services from './pages/Services'; // Import Services
+import Contact from './pages/Contact'; // Import Contact
 import { authAPI } from './services/api';
 
 // Configure message globally
@@ -24,10 +28,16 @@ message.config({
     maxCount: 3,
 });
 
+import SystemLayout from './components/SystemLayout';
+
 // Protected Route Component
 function ProtectedRoute({ children }) {
     const user = authAPI.getCurrentUser();
-    return user ? children : <Navigate to="/login" replace />;
+    return user ? (
+        <SystemLayout>
+            {children}
+        </SystemLayout>
+    ) : <Navigate to="/login" replace />;
 }
 
 function App() {
@@ -36,6 +46,10 @@ function App() {
             <AntApp>
                 <Router>
                     <Routes>
+                        <Route path="/" element={<LandingPage />} />
+                        <Route path="/about" element={<About />} />
+                        <Route path="/services" element={<Services />} />
+                        <Route path="/contact" element={<Contact />} /> {/* Add Contact Route */}
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
                         <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -112,7 +126,6 @@ function App() {
                                 </ProtectedRoute>
                             }
                         />
-                        <Route path="/" element={<Navigate to="/dashboard" replace />} />
                         <Route path="*" element={<NotFound />} />
                     </Routes>
                 </Router>

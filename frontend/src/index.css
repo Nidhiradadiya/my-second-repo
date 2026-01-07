@@ -1,25 +1,25 @@
 :root {
   /* Color Palette */
-  --color-primary: #6366f1;
-  --color-primary-dark: #4f46e5;
-  --color-primary-light: #818cf8;
-  --color-secondary: #8b5cf6;
-  --color-accent: #ec4899;
+  --color-primary: #0B57D0;
+  --color-primary-dark: #0842A0;
+  --color-primary-light: #D3E3FD;
+  --color-secondary: #444746;
+  --color-accent: #727676;
 
   --color-success: #10b981;
   --color-error: #ef4444;
   --color-warning: #f59e0b;
 
-  --color-bg: #0f172a;
-  --color-bg-secondary: #1e293b;
-  --color-bg-tertiary: #334155;
-  --color-surface: #1e293b;
+  --color-bg: #000000;
+  --color-bg-secondary: #1F1F1F;
+  --color-bg-tertiary: #444746;
+  --color-surface: #1F1F1F;
 
-  --color-text: #f1f5f9;
-  --color-text-secondary: #cbd5e1;
-  --color-text-muted: #94a3b8;
+  --color-text: #FFFFFF;
+  --color-text-secondary: #E1E3E1;
+  --color-text-muted: #747775;
 
-  --color-border: #334155;
+  --color-border: #444746;
 
   /* Spacing */
   --spacing-xs: 0.25rem;
@@ -59,7 +59,7 @@
 
 body {
   font-family: var(--font-family);
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+  background: var(--color-bg);
   color: var(--color-text);
   line-height: 1.6;
   min-height: 100vh;

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-    Layout,
     Table,
     Button,
     Space,
@@ -21,9 +20,7 @@ import {
     DollarOutlined,
 } from '@ant-design/icons';
 import { paymentAPI } from '../../services/billing';
-import '../customers/Customers.css';
 
-const { Header, Content } = Layout;
 const { Title } = Typography;
 const { RangePicker } = DatePicker;
 
@@ -142,8 +139,8 @@ function PaymentList() {
     ];
 
     return (
-        <Layout className="page-layout">
-            <Header className="page-header">
+        <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ marginBottom: 24, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Space>
                     <Button
                         type="text"
@@ -154,9 +151,9 @@ function PaymentList() {
                         Payments
                     </Title>
                 </Space>
-            </Header>
+            </div>
 
-            <Content className="page-content">
+            <div style={{ flex: 1 }}>
                 <Space direction="vertical" size="large" style={{ width: '100%' }}>
                     <Card>
                         <Row gutter={16} align="middle">
@@ -213,8 +210,8 @@ function PaymentList() {
                         }}
                     />
                 </Space>
-            </Content>
-        </Layout>
+            </div>
+        </div>
     );
 }
 

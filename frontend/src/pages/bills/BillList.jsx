@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-    Layout,
     Table,
     Button,
     Space,
@@ -19,9 +18,7 @@ import {
     PrinterOutlined,
 } from '@ant-design/icons';
 import { billAPI } from '../../services/billing';
-import '../customers/Customers.css';
 
-const { Header, Content } = Layout;
 const { Title } = Typography;
 
 function BillList() {
@@ -112,7 +109,7 @@ function BillList() {
             key: 'total',
             align: 'right',
             render: (total) => (
-                <span style={{ color: '#ED4192', fontWeight: 600 }}>
+                <span style={{ color: '#0B57D0', fontWeight: 600 }}>
                     ₹{total.toFixed(2)}
                 </span>
             ),
@@ -161,8 +158,8 @@ function BillList() {
     ];
 
     return (
-        <Layout className="page-layout">
-            <Header className="page-header">
+        <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ marginBottom: 24, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Space>
                     <Button
                         type="text"
@@ -176,9 +173,9 @@ function BillList() {
                 <Button type="primary" icon={<PlusOutlined />} onClick={() => navigate('/bills/new')}>
                     Create Bill
                 </Button>
-            </Header>
+            </div>
 
-            <Content className="page-content">
+            <div style={{ flex: 1 }}>
                 <Table
                     columns={columns}
                     dataSource={bills}
@@ -190,8 +187,8 @@ function BillList() {
                         showTotal: (total) => `Total ${total} bills`,
                     }}
                 />
-            </Content>
-        </Layout>
+            </div>
+        </div>
     );
 }
 

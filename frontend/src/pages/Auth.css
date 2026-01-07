@@ -1,121 +1,107 @@
-.auth-container {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-    background-size: 400% 400%;
-    animation: gradientBG 15s ease infinite;
-    position: relative;
-    overflow: hidden;
-}
-
-@keyframes gradientBG {
-    0% {
-        background-position: 0% 50%;
-    }
-
-    50% {
-        background-position: 100% 50%;
-    }
-
-    100% {
-        background-position: 0% 50%;
-    }
-}
-
-.auth-container::before {
-    content: '';
-    position: absolute;
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-    border-radius: 50%;
-    top: -150px;
-    left: -150px;
-    animation: float 8s ease-in-out infinite;
-    z-index: 0;
-}
-
-.auth-container::after {
-    content: '';
-    position: absolute;
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-    border-radius: 50%;
-    bottom: -100px;
-    right: -100px;
-    animation: float 10s ease-in-out infinite reverse;
-    z-index: 0;
-}
-
-@keyframes float {
-
-    0%,
-    100% {
-        transform: translate(0, 0);
-    }
-
-    50% {
-        transform: translate(30px, 30px);
-    }
-}
-
-.auth-card {
+/* Glassmorphism Styles */
+.glass-card {
+    background: rgba(255, 255, 255, 0.2);
+    /* Very transparent */
+    backdrop-filter: blur(40px);
+    /* Strong blur */
+    -webkit-backdrop-filter: blur(40px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    border-radius: 20px;
+    padding: 36px;
+    /* Slightly larger padding */
     width: 100%;
     max-width: 420px;
-    /* Glassmorphism Effect */
-    background: rgba(255, 255, 255, 0.85) !important;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    /* Increased width */
     position: relative;
-    z-index: 1;
-    border-radius: 16px !important;
-    /* Overriding Ant Design card radius for softer look */
+    animation: fadeIn 0.5s ease-out;
 }
 
-/* Ensure text inside is readable */
-.auth-card .ant-typography {
-    color: #1f1f1f;
-}
-
-.auth-card a {
-    color: #ED4192;
-    text-decoration: none;
-    font-weight: 500;
+/* Input Styles - Underlined/Borderless */
+.glass-form .ant-input-affix-wrapper-borderless,
+.glass-form .ant-input-borderless {
+    background: transparent !important;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.2) !important;
+    border-radius: 0 !important;
+    padding-left: 0 !important;
+    padding-bottom: 8px !important;
     transition: all 0.3s;
 }
 
-.auth-card a:hover {
-    color: #c03575;
-    text-decoration: underline;
+.glass-form .ant-input-affix-wrapper-borderless:hover,
+.glass-form .ant-input-affix-wrapper-borderless:focus,
+.glass-form .ant-input-affix-wrapper-borderless-focused {
+    border-bottom-color: #000 !important;
 }
 
-/* Make sure form items have proper spacing */
-.ant-form-item {
-    margin-bottom: 24px;
-    /* Increased slightly for breathing room */
+.glass-form .ant-input {
+    background: transparent !important;
+    font-size: 16px;
+    color: #111 !important;
+    /* Ensure clear dark text */
 }
 
-.ant-form-item:last-child {
-    margin-bottom: 0;
+/* Fix for Chrome Autofill White Background */
+.glass-form input:-webkit-autofill,
+.glass-form input:-webkit-autofill:hover,
+.glass-form input:-webkit-autofill:focus,
+.glass-form input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px rgba(255, 255, 255, 0.0) inset !important;
+    transition: background-color 5000s ease-in-out 0s;
+    -webkit-text-fill-color: #111 !important;
 }
 
-/* Button Styling Override for Premium Feel */
-.auth-card .ant-btn-primary {
-    background: #ED4192;
-    border-color: #ED4192;
-    height: 40px;
-    font-weight: 600;
-    box-shadow: 0 4px 14px 0 rgba(237, 65, 146, 0.39);
+/* Icon Styles */
+.glass-form .anticon {
+    color: #333 !important;
+    font-size: 18px;
 }
 
-.auth-card .ant-btn-primary:hover {
-    background: #ff5ca0 !important;
-    border-color: #ff5ca0 !important;
+/* Label Styles */
+.glass-form .ant-form-item-label label {
+    font-size: 15px;
+    font-weight: 500;
+    color: #333;
+}
+
+/* Button Styles */
+.login-btn {
+    background: #0F172A !important;
+    /* Dark Blue/Black */
+    border-color: #0F172A !important;
+    height: 48px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.39) !important;
+}
+
+.login-btn:hover {
+    background: #1e293b !important;
+    border-color: #1e293b !important;
     transform: translateY(-1px);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .glass-card {
+        padding: 32px 24px;
+        margin: 16px;
+        backdrop-filter: blur(30px);
+        background: rgba(255, 255, 255, 0.85);
+        /* Even more opacity on mobile for readability */
+    }
 }

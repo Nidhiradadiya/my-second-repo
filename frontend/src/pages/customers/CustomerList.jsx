@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-    Layout,
     Table,
     Button,
     Input,
@@ -23,7 +22,6 @@ import {
 } from '@ant-design/icons';
 import { customerAPI } from '../../services/billing';
 
-const { Header, Content } = Layout;
 const { Title } = Typography;
 
 function CustomerList() {
@@ -129,7 +127,7 @@ function CustomerList() {
             key: 'balance',
             align: 'right',
             render: (balance) => (
-                <span style={{ color: balance > 0 ? '#ED4192' : '#52c41a', fontWeight: 600 }}>
+                <span style={{ color: balance > 0 ? '#0B57D0' : '#52c41a', fontWeight: 600 }}>
                     ₹{balance.toFixed(2)}
                 </span>
             ),
@@ -169,8 +167,8 @@ function CustomerList() {
     ];
 
     return (
-        <Layout className="page-layout">
-            <Header className="page-header">
+        <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ marginBottom: 24, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Space>
                     <Button
                         type="text"
@@ -184,9 +182,9 @@ function CustomerList() {
                 <Button type="primary" icon={<PlusOutlined />} onClick={() => handleOpenModal()}>
                     Add Customer
                 </Button>
-            </Header>
+            </div>
 
-            <Content className="page-content">
+            <div style={{ flex: 1 }}>
                 <Space direction="vertical" size="large" style={{ width: '100%' }}>
                     <Input.Search
                         placeholder="Search customers..."
@@ -259,8 +257,8 @@ function CustomerList() {
                         </Form.Item>
                     </Form>
                 </Modal>
-            </Content>
-        </Layout>
+            </div>
+        </div>
     );
 }
 
