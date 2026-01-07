@@ -164,6 +164,16 @@ export const billAPI = {
         link.remove();
         window.URL.revokeObjectURL(url);
     },
+
+    print: async (id) => {
+        const response = await api.get(`/bills/${id}/pdf`, {
+            responseType: 'blob',
+        });
+
+        // Create blob URL and open in new tab
+        const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+        window.open(url, '_blank');
+    },
 };
 
 // Payment API

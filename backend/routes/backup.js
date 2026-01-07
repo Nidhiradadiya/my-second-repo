@@ -15,7 +15,7 @@ router.get('/', protect, async (req, res) => {
     try {
         const [users, company, customers, products, bills, payments] = await Promise.all([
             User.find({}),
-            Company.findOne({}),
+            Company.find({}),
             Customer.find({}),
             Product.find({}),
             Bill.find({}),

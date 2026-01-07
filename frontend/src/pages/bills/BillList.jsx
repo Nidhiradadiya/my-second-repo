@@ -16,6 +16,7 @@ import {
     DownloadOutlined,
     DeleteOutlined,
     ArrowLeftOutlined,
+    PrinterOutlined,
 } from '@ant-design/icons';
 import { billAPI } from '../../services/billing';
 import '../customers/Customers.css';
@@ -50,6 +51,14 @@ function BillList() {
             message.success('PDF downloaded successfully');
         } catch (error) {
             message.error('Failed to download PDF');
+        }
+    };
+
+    const handlePrintPDF = async (billId) => {
+        try {
+            await billAPI.print(billId);
+        } catch (error) {
+            message.error('Failed to open PDF');
         }
     };
 
@@ -121,6 +130,13 @@ function BillList() {
                         onClick={() => navigate(`/bills/${record._id}`)}
                     >
                         View
+                    </Button>
+                    <Button
+                        type="link"
+                        icon={<PrinterOutlined />}
+                        onClick={() => handlePrintPDF(record._id)}
+                    >
+                        Print
                     </Button>
                     <Button
                         type="link"
